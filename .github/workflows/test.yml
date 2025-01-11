@@ -1,0 +1,15 @@
+name: build
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: build
+      uses: highFreqSurfer/check-aur-package-update@master
+      with:
+          aur-git: https://aur.archlinux.org/linux-cachyos.git
+          ur-repo: highFreqSurfer/test-action
+          branch: package
+          
