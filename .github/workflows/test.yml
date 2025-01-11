@@ -12,4 +12,5 @@ jobs:
           aur-git: https://aur.archlinux.org/linux-cachyos.git
           ur-repo: highFreqSurfer/test-action
           branch: package
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           
