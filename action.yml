@@ -11,6 +11,8 @@ inputs:
     required: false
   path:
     required: false
+  github-token:
+    required: true
   
 
 runs:
@@ -33,7 +35,7 @@ runs:
           URL="${URL}?ref=${{inputs.branch}}"
         fi
 
-        BUILT_COMMIT=$(curl $URL -H "Authorization: token ${{secrets.GITHUB_TOKEN}}")
+        BUILT_COMMIT=$(curl $URL -H "Authorization: token ${{inputs.github-token}}")
         if [ ! "$BUILT_COMMIT" -e "$(git rev-parse HEAD)" ]; then
           touch ../needUpdating
         fi
