@@ -27,20 +27,23 @@ runs:
         cd aur-git
         URL="https://api.github.com/repos/${{inputs.ur-repo}}/contents/"
 
-        if [ ! "${{inputs.path}}" -e "" ]; then
+        if [ -n "${{inputs.path}}" ]; then
           URL="${URL}${{inputs.path}}/"
         fi
 
         URL="${URL}/built_commit"
-        if [ ! "${{inputs.branch}}" -e "" ]; then
+        if [ -n "${{inputs.branch}}" ]; then
           URL="${URL}?ref=${{inputs.branch}}"
         fi
 
         BUILT_COMMIT=$(curl $URL -H "Authorization: token ${{inputs.github-token}}")
-        if [ ! "$BUILT_COMMIT" -e "$(git rev-parse HEAD)" ]; then
+        if [ "$BUILT_COMMIT" ！= "$(git rev-parse HEAD)" ]; then
           touch ../needUpdating
         fi
+
+        ls .. -lh
         
       shell: bash
+      
 
         
