@@ -17,20 +17,20 @@ runs:
   using: "composite"
   steps:
     - name: clone aur-git
-      run: git clone ${{input.aur-git}} aur-git
+      run: git clone ${{inputs.aur-git}} aur-git
 
     - name: get last built commit
       run: |
         cd aur-git
-        URL="https://api.github.com/repos/${{input.ur-repo}}/contents/"
+        URL="https://api.github.com/repos/${{inputs.ur-repo}}/contents/"
 
-        if [ ! "${{input.path}}" -e "" ]; then
-          URL="${URL}${{input.path}}/"
+        if [ ! "${{inputs.path}}" -e "" ]; then
+          URL="${URL}${{inputs.path}}/"
         fi
 
         URL="${URL}/built_commit"
-        if [ ! "${{input.branch}}" -e "" ]; then
-          URL="${URL}?ref=${{input.branch}}"
+        if [ ! "${{inputs.branch}}" -e "" ]; then
+          URL="${URL}?ref=${{inputs.branch}}"
         fi
 
         BUILT_COMMIT=$(curl $URL -H "Authorization: token ${{secrets.GITHUB_TOKEN}}")
