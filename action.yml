@@ -24,6 +24,8 @@ runs:
 
     - name: get last built commit
       run: |
+        set -x
+        
         cd aur-git
         URL="https://api.github.com/repos/${{inputs.ur-repo}}/contents/"
 
@@ -43,7 +45,7 @@ runs:
 
         ls .. -lh
         
-      shell: bash -x
+      shell: bash
       
 
         
