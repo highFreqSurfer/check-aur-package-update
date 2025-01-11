@@ -7,7 +7,7 @@ jobs:
     steps:
     
     - name: build
-      uses: highFreqSurfer/check-aur-package-update@master
+      uses: highFreqSurfer/check-aur-package-update@main
       with:
           aur-git: https://aur.archlinux.org/linux-cachyos.git
           ur-repo: highFreqSurfer/test-action
