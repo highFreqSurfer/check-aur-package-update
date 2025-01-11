@@ -1,0 +1,39 @@
+name: 'check aur package update'
+branding:
+  icon: user-check
+  color: gray-dark
+inputs:
+  aur-git:
+    required: true
+  ur-repo:
+    required: true
+  branch:
+    required: false
+  path:
+    required: false
+  
+
+runs:
+  using: "composite"
+  steps:
+    - name: clone aur-git
+      run: git clone ${{input.aur-git}} aur-git
+
+    - name: get last built commit
+      run: |
+        cd aur-git
+        URL="https://api.github.com/repos/${{input.ur-repo}}/contents/"
+
+        if [ ! "${{input.path}}" -e "" ]; then
+          URL="${URL}${{input.path}}/"
+        fi
+
+        URL="${URL}/built_commit"
+        if [ ! "${{input.branch}}" -e "" ]; then
+          URL="${URL}?ref=${{input.branch}}"
+        fi
+
+        BUILT_COMMIT=$(curl $URL -H "Authorization: token ${{secrets.GITHUB_TOKEN}}")
+        if [ ! "$BUILT_COMMIT" -e "$(git rev-parse HEAD)" ]; then
+          touch ../needUpdating
+        fi
