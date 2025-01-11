@@ -1,4 +1,5 @@
 name: 'check aur package update'
+shell: bash
 branding:
   icon: user-check
   color: gray-dark
