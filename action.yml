@@ -1,0 +1,57 @@
+name: 'check aur package update'
+
+inputs:
+  aur-git:
+    required: true
+  ur-repo:
+    required: true
+  branch:
+    required: false
+  path:
+    required: false
+
+outputs:
+  ret: 
+    description: got YES or NO. got FATAL when there is err
+    value: ${{ steps.check.outputs.ret }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: clone aur-git
+      run: git clone https://aur.archlinux.org/${{inputs.aur-git}}.git aur-git
+      shell: bash
+
+    - name: get last built commit
+      id: check
+      run: |
+        set -x
+        
+        cd aur-git
+        URL="https://api.github.com/repos/${{inputs.ur-repo}}/contents/"
+
+        if [ -n "${{inputs.path}}" ]; then
+          URL="${URL}${{inputs.path}}/"
+        fi
+
+        URL="${URL}/built_commit"
+        if [ -n "${{inputs.branch}}" ]; then
+          URL="${URL}?ref=${{inputs.branch}}"
+        fi
+
+        STATUS_CODE=$(curl $URL -w %{http_code} -o resp)
+        
+        if [ $STATUS_CODE -ne 200 ] && [ $STATUS_CODE -ne 404 ]; then
+          echo "http status code is $STATUS_CODE"
+          echo "ret=FATAL" >> "$GITHUB_OUTPUT"
+          exit
+        fi
+        
+        BUILT_COMMIT=$(cat resp | jq -r .content | base64 -d)
+        if [ "$BUILT_COMMIT" != "$(git rev-parse HEAD)" ]; then
+          echo "ret=YES" >> "$GITHUB_OUTPUT"
+        else
+          echo "ret=NO" >> "$GITHUB_OUTPUT"
+        fi
+
+      shell: bash
